@@ -1,37 +1,79 @@
+'use client'
+
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  Link,
+  Switch,
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
-  Button,
 } from '@nextui-org/react'
+import { MdDarkMode, MdLightMode } from 'react-icons/md'
+import { useTheme } from 'next-themes'
+import { useState, useEffect } from 'react'
 
 const layout = ({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode
 }) => {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   return (
     <>
-      {/* <Navbar>
+      <Navbar maxWidth="2xl">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          className="sm:hidden"
+        />
         <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
+          <Link color="foreground" className="font-semibold" href="/">
+            Retirement Age Calculator
+          </Link>
         </NavbarBrand>
-        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-          <NavbarItem>a</NavbarItem>
-          <NavbarItem isActive>a</NavbarItem>
-          <NavbarItem>a</NavbarItem>
-        </NavbarContent>
         <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">a</NavbarItem>
-          <NavbarItem>a</NavbarItem>
+          {mounted && (
+            <NavbarItem>
+              <Switch
+                // size={md ? 'lg' : 'sm'}
+                classNames={{
+                  wrapper: 'bg-slate-900',
+                }}
+                isSelected={theme !== 'dark'}
+                startContent={<MdLightMode />}
+                endContent={<MdDarkMode />}
+                onValueChange={(isSelected) => {
+                  setTheme(isSelected ? 'light' : 'dark')
+                }}
+              ></Switch>
+            </NavbarItem>
+          )}
+          <NavbarItem className="hidden sm:block">
+            <Link color="foreground" href="/about">
+              About
+            </Link>
+          </NavbarItem>
         </NavbarContent>
-      </Navbar> */}
-      <Button>button</Button>
+        <NavbarMenu>
+          <NavbarMenuItem>
+            <Link color="foreground" className="w-full" href="/" size="lg">
+              Home
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link color="foreground" className="w-full" href="/about" size="lg">
+              About
+            </Link>
+          </NavbarMenuItem>
+        </NavbarMenu>
+      </Navbar>
       <div className="container mx-auto">{children}</div>
     </>
   )
